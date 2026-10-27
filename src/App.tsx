@@ -39,7 +39,8 @@ import {
   HeartPulse,
   Image as ImageIcon,
   FileCheck,
-  ListPlus
+  ListPlus,
+  RotateCcw
 } from 'lucide-react';
 
 interface Course {
@@ -136,27 +137,23 @@ export default function App() {
   // ==========================================
   // --- ABA 1: MEU ESPAÇO ---
   // ==========================================
-  const [auPairName, setAuPairName] = useState(() => localStorage.getItem('auPairName') || 'Luana');
+  const [auPairName, setAuPairName] = useState(() => localStorage.getItem('auPairName') || '');
   const [auPairAge, setAuPairAge] = useState(() => localStorage.getItem('auPairAge') || '');
-  const [weeklyStipend, setWeeklyStipend] = useState(() => localStorage.getItem('weeklyStipend') || '215');
+  const [weeklyStipend, setWeeklyStipend] = useState(() => localStorage.getItem('weeklyStipend') || '');
   
   const [totalHours, setTotalHours] = useState<number>(() => {
     const saved = localStorage.getItem('totalHours');
-    return saved ? parseFloat(saved) : 120;
+    return saved ? parseFloat(saved) : 0;
   });
   const [weeklyHours, setWeeklyHours] = useState<number>(() => {
     const saved = localStorage.getItem('weeklyHours');
-    return saved ? parseFloat(saved) : 32;
+    return saved ? parseFloat(saved) : 0;
   });
   const [addHoursInput, setAddHoursInput] = useState<string>('');
 
   const [courses, setCourses] = useState<Course[]>(() => {
     const saved = localStorage.getItem('courses');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', name: 'Primeiros Socorros Infantil (CPR & AED)', institution: 'Cruz Vermelha', hours: '8h', completed: true },
-      { id: '2', name: 'Desenvolvimento e Rotina Infantil', institution: 'Childcare Institute', hours: '12h', completed: true },
-      { id: '3', name: 'Inglês Avançado / Conversação', institution: 'Community College', hours: '60h', completed: false }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newCourseName, setNewCourseName] = useState('');
   const [newCourseInst, setNewCourseInst] = useState('');
@@ -165,18 +162,14 @@ export default function App() {
 
   const [goals, setGoals] = useState<MilestoneGoal[]>(() => {
     const saved = localStorage.getItem('goals');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', title: 'Completar 72 horas de créditos acadêmicos', completed: false },
-      { id: '2', title: 'Viajar para 3 estados/cidades diferentes', completed: true },
-      { id: '3', title: 'Concluir curso de CPR/Primeiros Socorros', completed: true }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newGoalTitle, setNewGoalTitle] = useState('');
 
-  const [auPairMood, setAuPairMood] = useState(() => localStorage.getItem('auPairMood') || 'Radiante');
+  const [auPairMood, setAuPairMood] = useState(() => localStorage.getItem('auPairMood') || 'Bem');
   const [energyLevel, setEnergyLevel] = useState<number>(() => {
     const saved = localStorage.getItem('energyLevel');
-    return saved ? parseInt(saved, 10) : 4;
+    return saved ? parseInt(saved, 10) : 5;
   });
   const [auPairConquest, setAuPairConquest] = useState(() => localStorage.getItem('auPairConquest') || '');
   const [auPairChallenge, setAuPairChallenge] = useState(() => localStorage.getItem('auPairChallenge') || '');
@@ -211,8 +204,15 @@ export default function App() {
   };
 
   const handleResetWeeklyHours = () => {
-    if (confirm('Deseja zerar a contagem da semana para iniciar uma nova semana de trabalho?')) {
+    if (confirm('Deseja zerar a contagem de horas da semana?')) {
       setWeeklyHours(0);
+    }
+  };
+
+  const handleClearAllData = () => {
+    if (confirm('⚠️ ATENÇÃO: Deseja apagar TODOS os dados e zerar o aplicativo por completo?')) {
+      localStorage.clear();
+      window.location.reload();
     }
   };
 
@@ -221,7 +221,7 @@ export default function App() {
     const newC: Course = {
       id: Date.now().toString(),
       name: newCourseName,
-      institution: newCourseInst || 'Curso / College',
+      institution: newCourseInst || 'Curso',
       hours: newCourseHours ? `${newCourseHours}h` : '',
       completed: false
     };
@@ -262,32 +262,26 @@ export default function App() {
     return saved ? JSON.parse(saved) : [
       {
         id: '1',
-        name: 'Sofia',
-        age: '4 anos',
-        routine: '08:00 - Café da manhã\n12:00 - Almoço\n13:30 - Sesta',
-        schoolDismissal: '15:30',
-        pickupInfo: 'Buscar a pé no portão B',
-        bagChecklist: 'Casaco e garrafinha de água',
-        bathDone: true,
+        name: 'Criança 1',
+        age: '',
+        routine: '',
+        schoolDismissal: '',
+        pickupInfo: '',
+        bagChecklist: '',
+        bathDone: false,
         homeworkDone: false,
-        screenTimeDone: true,
-        mealsNotes: 'Almoçou bem, tomou suco.',
-        napTime: '13:30 - 15:00',
-        diaperCount: 2,
-        pottySuccess: true,
-        insuranceName: 'Blue Cross Kids',
-        insurancePolicy: 'POL-998822-X',
-        hospitalPreference: 'Children\'s General Hospital',
-        pediatricianName: 'Dra. Ana Silva',
-        pediatricianPhone: '+1 555-0192',
-        activities: [
-          { id: '101', title: 'Pintura com guache e desenho livre', category: 'Artes', duration: '45 min', notes: 'Gostou muito de misturar as cores' },
-          { id: '102', title: 'Leitura de livro de historinhas', category: 'Leitura', duration: '20 min', notes: 'Prestou atenção em tudo' }
-        ],
-        weeklyEvents: [
-          { id: '201', day: 'Terça-feira', time: '16:00', title: 'Aula de Natação' },
-          { id: '202', day: 'Quinta-feira', time: '10:00', title: 'Hora do Conto na Biblioteca' }
-        ]
+        screenTimeDone: false,
+        mealsNotes: '',
+        napTime: '',
+        diaperCount: 0,
+        pottySuccess: false,
+        insuranceName: '',
+        insurancePolicy: '',
+        hospitalPreference: '',
+        pediatricianName: '',
+        pediatricianPhone: '',
+        activities: [],
+        weeklyEvents: []
       }
     ];
   });
@@ -426,7 +420,7 @@ export default function App() {
     }));
     setChildren(resetChildren);
     
-    alert(`O diário do dia ${todayStr} foi arquivado! A rotina das crianças foi renovada para o novo dia.`);
+    alert(`Diário do dia ${todayStr} arquivado com sucesso!`);
   };
 
   // ==========================================
@@ -434,26 +428,20 @@ export default function App() {
   // ==========================================
   const [contacts, setContacts] = useState<EmergencyContact[]>(() => {
     const saved = localStorage.getItem('contacts');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', label: 'Mãe / Pai', phone: '+5511999998888' },
-      { id: '2', label: 'Pediatra Dra. Ana', phone: '+5511977776666' },
-      { id: '3', label: 'Socorro / Emergência', phone: '192' }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newContactLabel, setNewContactLabel] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
 
   const [allergiesList, setAllergiesList] = useState<string[]>(() => {
     const saved = localStorage.getItem('allergiesList');
-    return saved ? JSON.parse(saved) : ['Amendoim', 'Picada de Abelha'];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newAllergy, setNewAllergy] = useState('');
 
   const [medicationsList, setMedicationsList] = useState<Medication[]>(() => {
     const saved = localStorage.getItem('medicationsList');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', name: 'Anti-histamínico', dose: '5 ml', time: '14:00', alarmActive: false }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newMedName, setNewMedName] = useState('');
   const [newMedDose, setNewMedDose] = useState('');
@@ -461,16 +449,12 @@ export default function App() {
 
   const [houseLocations, setHouseLocations] = useState<HouseLocation[]>(() => {
     const saved = localStorage.getItem('houseLocations');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', item: 'Kit de Primeiros Socorros', location: 'Armário superior do banheiro principal' },
-      { id: '2', item: 'Extintor de Incêndio', location: 'Ao lado da despensa da cozinha' },
-      { id: '3', item: 'Disjuntor de Luz / Chave Geral', location: 'Garagem, atrás da porta lateral' }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newItemName, setNewItemName] = useState('');
   const [newItemLoc, setNewItemLoc] = useState('');
 
-  const [visitorRules, setVisitorRules] = useState(() => localStorage.getItem('visitorRules') || 'Não abrir a porta para pessoas não identificadas. Encomendas podem ser deixadas no alpendre.');
+  const [visitorRules, setVisitorRules] = useState(() => localStorage.getItem('visitorRules') || '');
 
   useEffect(() => { localStorage.setItem('contacts', JSON.stringify(contacts)); }, [contacts]);
   useEffect(() => { localStorage.setItem('allergiesList', JSON.stringify(allergiesList)); }, [allergiesList]);
@@ -583,10 +567,7 @@ export default function App() {
 
   const [permissions, setPermissions] = useState<PermissionForm[]>(() => {
     const saved = localStorage.getItem('permissions');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', title: 'Passeio no Parque com Transporte/Carro', details: 'Autorização para transportar a criança ao parque municipal na sexta-feira.', approved: true },
-      { id: '2', title: 'Participação na Festa de Aniversário de Colega', details: 'Autorização para levar a criança na festa da escola às 15h.', approved: false }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
   const [newPermTitle, setNewPermTitle] = useState('');
   const [newPermDetails, setNewPermDetails] = useState('');
@@ -626,7 +607,7 @@ export default function App() {
 
   const buildWhatsAppText = () => {
     if (msgType === 'arrival') {
-      return `Olá! Passando para avisar que já cheguei e está tudo ótimo por aqui! 😊🌸\n\nAu Pair: ${auPairName}`;
+      return `Olá! Passando para avisar que já cheguei e está tudo ótimo por aqui! 😊🌸\n\nAu Pair: ${auPairName || 'Au Pair'}`;
     }
 
     if (msgType === 'shopping') {
@@ -634,7 +615,7 @@ export default function App() {
       if (foodItems) text += `\n🍎 *Alimentação:* ${foodItems}`;
       if (hygieneItems) text += `\n🧼 *Higiene/Fraldas:* ${hygieneItems}`;
       if (schoolItems) text += `\n✏️ *Escola/Outros:* ${schoolItems}`;
-      if (!foodItems && !hygieneItems && !schoolItems) text += `\n- Itens gerais de consumo da casa`;
+      if (!foodItems && !hygieneItems && !schoolItems) text += `\n- Nenhum item pendente informado`;
       text += `\n\nObrigada! ❤️`;
       return text;
     }
@@ -693,7 +674,7 @@ export default function App() {
         <div className="border-b-2 border-rose-400 pb-4 mb-6 flex justify-between items-end">
           <div>
             <h1 className="text-2xl font-bold text-rose-600">AuPair Hub — Daily Routine</h1>
-            <p className="text-xs text-slate-500">Au Pair / Cuidadora: {auPairName || 'Luana'}</p>
+            <p className="text-xs text-slate-500">Au Pair / Cuidadora: {auPairName || '__________'}</p>
           </div>
           <div className="text-right">
             <p className="text-xs font-semibold text-slate-400">Data: ____/____/________</p>
@@ -946,7 +927,7 @@ export default function App() {
                       type="text"
                       value={newCourseName}
                       onChange={(e) => setNewCourseName(e.target.value)}
-                      placeholder="Nome do curso (ex: CPR, Inglês Avançado)"
+                      placeholder="Nome do curso (ex: CPR, Inglês)"
                       className="w-full px-3 py-1.5 text-xs rounded-lg border border-rose-200 bg-white focus:outline-none focus:ring-1 focus:ring-rose-400"
                     />
                     <div className="grid grid-cols-2 gap-2">
@@ -961,7 +942,7 @@ export default function App() {
                         type="text"
                         value={newCourseHours}
                         onChange={(e) => setNewCourseHours(e.target.value)}
-                        placeholder="Carga Horária (ex: 12)"
+                        placeholder="Horas (ex: 12)"
                         className="px-3 py-1.5 text-xs rounded-lg border border-rose-200 bg-white focus:outline-none focus:ring-1 focus:ring-rose-400"
                       />
                     </div>
@@ -1006,22 +987,26 @@ export default function App() {
                 </div>
 
                 <div className="space-y-2">
-                  {goals.map((g) => (
-                    <div key={g.id} className="flex items-center justify-between p-2.5 bg-rose-50/20 border border-rose-100 rounded-xl">
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => toggleGoalStatus(g.id)}
-                          className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${g.completed ? 'bg-rose-500 border-rose-500 text-white' : 'border-rose-300'}`}
-                        >
-                          {g.completed && <Check className="w-3 h-3" />}
+                  {goals.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-1">Nenhuma meta cadastrada.</p>
+                  ) : (
+                    goals.map((g) => (
+                      <div key={g.id} className="flex items-center justify-between p-2.5 bg-rose-50/20 border border-rose-100 rounded-xl">
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={() => toggleGoalStatus(g.id)}
+                            className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${g.completed ? 'bg-rose-500 border-rose-500 text-white' : 'border-rose-300'}`}
+                          >
+                            {g.completed && <Check className="w-3 h-3" />}
+                          </button>
+                          <span className={`text-xs ${g.completed ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}`}>{g.title}</span>
+                        </div>
+                        <button onClick={() => handleRemoveGoal(g.id)} className="text-slate-300 hover:text-red-400 p-1">
+                          <Trash2 className="w-3 h-3" />
                         </button>
-                        <span className={`text-xs ${g.completed ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}`}>{g.title}</span>
                       </div>
-                      <button onClick={() => handleRemoveGoal(g.id)} className="text-slate-300 hover:text-red-400 p-1">
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 <div className="flex gap-2 pt-1">
@@ -1029,7 +1014,7 @@ export default function App() {
                     type="text"
                     value={newGoalTitle}
                     onChange={(e) => setNewGoalTitle(e.target.value)}
-                    placeholder="Nova meta (ex: Conhecer NY, Créditos acadêmicos)"
+                    placeholder="Nova meta (ex: Conhecer NY)"
                     className="w-full px-3 py-1.5 text-xs rounded-xl border border-rose-200 bg-rose-50/20"
                   />
                   <button
@@ -1095,7 +1080,7 @@ export default function App() {
                       rows={2}
                       value={auPairConquest}
                       onChange={(e) => setAuPairConquest(e.target.value)}
-                      placeholder="O que você conseguiu hoje, mesmo que pequeno?"
+                      placeholder="O que você conseguiu hoje?"
                       className="w-full px-3 py-2 text-sm rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-rose-50/20 resize-none"
                     />
                   </div>
@@ -1106,18 +1091,18 @@ export default function App() {
                       rows={2}
                       value={auPairChallenge}
                       onChange={(e) => setAuPairChallenge(e.target.value)}
-                      placeholder="O que foi difícil? Como lidou com isso?"
+                      placeholder="O que foi difícil?"
                       className="w-full px-3 py-2 text-sm rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-rose-50/20 resize-none"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-medium text-slate-600 block mb-1">Momento de Gratidão ou Memória</label>
+                    <label className="text-xs font-medium text-slate-600 block mb-1">Momento de Gratidão</label>
                     <textarea
                       rows={2}
                       value={auPairGratitude}
                       onChange={(e) => setAuPairGratitude(e.target.value)}
-                      placeholder="Uma cena que você quer guardar do dia..."
+                      placeholder="Uma memória boa do dia..."
                       className="w-full px-3 py-2 text-sm rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-rose-50/20 resize-none"
                     />
                   </div>
@@ -1147,7 +1132,7 @@ export default function App() {
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-slate-800">📅 {item.date}</span>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-medium">⚡ {item.energyLevel || 4}/5</span>
+                            <span className="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-medium">⚡ {item.energyLevel || 5}/5</span>
                             <span className="text-[10px] bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-medium">{item.auPairMood}</span>
                           </div>
                         </div>
@@ -1156,6 +1141,17 @@ export default function App() {
                     ))
                   )}
                 </div>
+              </div>
+
+              {/* BOTÃO DE RESET COMPLETO */}
+              <div className="pt-4 text-center">
+                <button
+                  onClick={handleClearAllData}
+                  className="inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 font-medium py-2 px-4 rounded-xl border border-red-200 bg-red-50/50 hover:bg-red-100 transition-all"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Zerar todos os dados do aplicativo</span>
+                </button>
               </div>
 
             </div>
@@ -1205,7 +1201,7 @@ export default function App() {
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <User className="w-4 h-4" />
-                  <h2>Dados de {activeChild.name || 'Criança'}</h2>
+                  <h2>Dados da Criança</h2>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
@@ -1215,7 +1211,7 @@ export default function App() {
                       type="text"
                       value={activeChild.name}
                       onChange={(e) => updateActiveChild('name', e.target.value)}
-                      placeholder="Ex: Sofia"
+                      placeholder="Nome da criança"
                       className="w-full px-3 py-2 text-sm rounded-xl border border-sky-200 bg-sky-50/20"
                     />
                   </div>
@@ -1282,7 +1278,7 @@ export default function App() {
                     }`}
                   >
                     <Baby className="w-4 h-4" />
-                    <span>{activeChild.pottySuccess ? 'Uso do Banheiro Registrado com Sucesso ✅' : 'Registrar Sucesso no Banheiro / Desfralde'}</span>
+                    <span>{activeChild.pottySuccess ? 'Uso do Banheiro Registrado ✅' : 'Registrar Sucesso no Banheiro / Desfralde'}</span>
                   </button>
                 </div>
               </div>
@@ -1320,7 +1316,7 @@ export default function App() {
                     type="text"
                     value={newActTitle}
                     onChange={(e) => setNewActTitle(e.target.value)}
-                    placeholder="Nome (ex: Pintura com dedos, Parque)"
+                    placeholder="Nome da atividade"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-sky-200 bg-white"
                   />
                   <div className="grid grid-cols-2 gap-2">
@@ -1339,7 +1335,7 @@ export default function App() {
                       type="text"
                       value={newActDuration}
                       onChange={(e) => setNewActDuration(e.target.value)}
-                      placeholder="Duração (ex: 45 min)"
+                      placeholder="Duração (ex: 30 min)"
                       className="px-3 py-1.5 text-xs rounded-lg border border-sky-200 bg-white"
                     />
                   </div>
@@ -1347,7 +1343,7 @@ export default function App() {
                     type="text"
                     value={newActNotes}
                     onChange={(e) => setNewActNotes(e.target.value)}
-                    placeholder="Nota de reação (ex: Adorou a atividade)"
+                    placeholder="Anotações / Reação da criança"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-sky-200 bg-white"
                   />
                   <button
@@ -1389,7 +1385,7 @@ export default function App() {
                     type="text"
                     value={newEventTitle}
                     onChange={(e) => setNewEventTitle(e.target.value)}
-                    placeholder="Evento (ex: Natação, Biblioteca)"
+                    placeholder="Compromisso (ex: Natação)"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-sky-200 bg-white"
                   />
                   <div className="grid grid-cols-2 gap-2">
@@ -1446,7 +1442,7 @@ export default function App() {
                       type="text"
                       value={activeChild.pickupInfo}
                       onChange={(e) => updateActiveChild('pickupInfo', e.target.value)}
-                      placeholder="Ex: Babá a pé / Van escolar"
+                      placeholder="Ex: Babá a pé"
                       className="w-full px-3 py-2 text-sm rounded-xl border border-sky-200 bg-sky-50/20"
                     />
                   </div>
@@ -1458,7 +1454,7 @@ export default function App() {
                     type="text"
                     value={activeChild.bagChecklist}
                     onChange={(e) => updateActiveChild('bagChecklist', e.target.value)}
-                    placeholder="Ex: Levar casaco e garrafinha de água"
+                    placeholder="Ex: Levar casaco e garrafinha"
                     className="w-full px-3 py-2 text-sm rounded-xl border border-sky-200 bg-sky-50/20"
                   />
                 </div>
@@ -1557,31 +1553,35 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-2">
-                  {contacts.map((contact) => (
-                    <div key={contact.id} className="flex items-center gap-2">
-                      <a
-                        href={`tel:${contact.phone}`}
-                        className="flex-1 flex items-center justify-between p-3 bg-red-50 border border-red-200 hover:bg-red-100 rounded-xl text-red-900 transition-colors shadow-sm"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="p-1.5 bg-red-600 text-white rounded-lg">
-                            <PhoneCall className="w-4 h-4" />
+                  {contacts.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-1">Nenhum contato de emergência cadastrado.</p>
+                  ) : (
+                    contacts.map((contact) => (
+                      <div key={contact.id} className="flex items-center gap-2">
+                        <a
+                          href={`tel:${contact.phone}`}
+                          className="flex-1 flex items-center justify-between p-3 bg-red-50 border border-red-200 hover:bg-red-100 rounded-xl text-red-900 transition-colors shadow-sm"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <div className="p-1.5 bg-red-600 text-white rounded-lg">
+                              <PhoneCall className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold">{contact.label}</p>
+                              <p className="text-[10px] text-red-600 font-mono">{contact.phone}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-xs font-bold">{contact.label}</p>
-                            <p className="text-[10px] text-red-600 font-mono">{contact.phone}</p>
-                          </div>
-                        </div>
-                        <span className="text-xs font-bold bg-red-600 text-white px-3 py-1 rounded-lg">LIGAR</span>
-                      </a>
-                      <button
-                        onClick={() => handleRemoveContact(contact.id)}
-                        className="p-2 text-slate-300 hover:text-red-500 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
+                          <span className="text-xs font-bold bg-red-600 text-white px-3 py-1 rounded-lg">LIGAR</span>
+                        </a>
+                        <button
+                          onClick={() => handleRemoveContact(contact.id)}
+                          className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
 
                 <div className="pt-2 border-t border-amber-100 space-y-2">
@@ -1619,17 +1619,21 @@ export default function App() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {allergiesList.map((item) => (
-                    <span
-                      key={item}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-red-600 text-white shadow-sm"
-                    >
-                      <span>⚠️ {item}</span>
-                      <button onClick={() => handleRemoveAllergy(item)} className="hover:text-red-200">
-                        ×
-                      </button>
-                    </span>
-                  ))}
+                  {allergiesList.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-1">Nenhuma alergia cadastrada.</p>
+                  ) : (
+                    allergiesList.map((item) => (
+                      <span
+                        key={item}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-red-600 text-white shadow-sm"
+                      >
+                        <span>⚠️ {item}</span>
+                        <button onClick={() => handleRemoveAllergy(item)} className="hover:text-red-200">
+                          ×
+                        </button>
+                      </span>
+                    ))
+                  )}
                 </div>
 
                 <div className="flex gap-2 pt-1">
@@ -1663,7 +1667,7 @@ export default function App() {
                         type="text"
                         value={activeChild.insuranceName || ''}
                         onChange={(e) => updateActiveChild('insuranceName', e.target.value)}
-                        placeholder="Ex: Blue Cross"
+                        placeholder="Nome do plano"
                         className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-amber-200 bg-amber-50/10"
                       />
                     </div>
@@ -1673,7 +1677,7 @@ export default function App() {
                         type="text"
                         value={activeChild.insurancePolicy || ''}
                         onChange={(e) => updateActiveChild('insurancePolicy', e.target.value)}
-                        placeholder="Ex: POL-123456"
+                        placeholder="Nº da carteirinha"
                         className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-amber-200 bg-amber-50/10"
                       />
                     </div>
@@ -1685,7 +1689,7 @@ export default function App() {
                       type="text"
                       value={activeChild.hospitalPreference || ''}
                       onChange={(e) => updateActiveChild('hospitalPreference', e.target.value)}
-                      placeholder="Ex: Children's Hospital"
+                      placeholder="Hospital de referência"
                       className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-amber-200 bg-amber-50/10"
                     />
                   </div>
@@ -1697,7 +1701,7 @@ export default function App() {
                         type="text"
                         value={activeChild.pediatricianName || ''}
                         onChange={(e) => updateActiveChild('pediatricianName', e.target.value)}
-                        placeholder="Ex: Dr. Smith"
+                        placeholder="Nome do médico"
                         className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-amber-200 bg-amber-50/10"
                       />
                     </div>
@@ -1707,7 +1711,7 @@ export default function App() {
                         type="text"
                         value={activeChild.pediatricianPhone || ''}
                         onChange={(e) => updateActiveChild('pediatricianPhone', e.target.value)}
-                        placeholder="Ex: +1 555-0199"
+                        placeholder="Telefone do consultório"
                         className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-amber-200 bg-amber-50/10"
                       />
                     </div>
@@ -1722,32 +1726,36 @@ export default function App() {
                 </div>
 
                 <div className="space-y-2">
-                  {medicationsList.map((med) => (
-                    <div key={med.id} className="flex items-center justify-between p-3 bg-amber-50/40 border border-amber-200 rounded-xl">
-                      <div>
-                        <p className="text-xs font-bold text-slate-800">{med.name} ({med.dose})</p>
-                        <p className="text-[10px] text-amber-800 font-semibold">🕒 Horário: {med.time}</p>
-                      </div>
+                  {medicationsList.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-1">Nenhum medicamento cadastrado.</p>
+                  ) : (
+                    medicationsList.map((med) => (
+                      <div key={med.id} className="flex items-center justify-between p-3 bg-amber-50/40 border border-amber-200 rounded-xl">
+                        <div>
+                          <p className="text-xs font-bold text-slate-800">{med.name} ({med.dose})</p>
+                          <p className="text-[10px] text-amber-800 font-semibold">🕒 Horário: {med.time}</p>
+                        </div>
 
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => toggleAlarm(med.id)}
-                          className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
-                            med.alarmActive
-                              ? 'bg-amber-500 text-white border-amber-500 shadow-sm animate-pulse'
-                              : 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
-                          }`}
-                        >
-                          {med.alarmActive ? <BellRing className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5" />}
-                          <span>{med.alarmActive ? 'Alarme ON' : 'Lembrete'}</span>
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => toggleAlarm(med.id)}
+                            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                              med.alarmActive
+                                ? 'bg-amber-500 text-white border-amber-500 shadow-sm animate-pulse'
+                                : 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
+                            }`}
+                          >
+                            {med.alarmActive ? <BellRing className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5" />}
+                            <span>{med.alarmActive ? 'Alarme ON' : 'Lembrete'}</span>
+                          </button>
 
-                        <button onClick={() => handleRemoveMedication(med.id)} className="text-slate-300 hover:text-red-400 p-1">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                          <button onClick={() => handleRemoveMedication(med.id)} className="text-slate-300 hover:text-red-400 p-1">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 <div className="p-3 bg-amber-50/50 border border-amber-200 rounded-xl space-y-2">
@@ -1791,33 +1799,37 @@ export default function App() {
                 </div>
 
                 <div className="space-y-2">
-                  {houseLocations.map((h) => (
-                    <div key={h.id} className="flex items-center justify-between p-2.5 bg-amber-50/20 border border-amber-100 rounded-xl">
-                      <div>
-                        <p className="text-xs font-bold text-slate-800">{h.item}</p>
-                        <p className="text-[11px] text-amber-900">{h.location}</p>
+                  {houseLocations.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-1">Nenhum item cadastrado.</p>
+                  ) : (
+                    houseLocations.map((h) => (
+                      <div key={h.id} className="flex items-center justify-between p-2.5 bg-amber-50/20 border border-amber-100 rounded-xl">
+                        <div>
+                          <p className="text-xs font-bold text-slate-800">{h.item}</p>
+                          <p className="text-[11px] text-amber-900">{h.location}</p>
+                        </div>
+                        <button onClick={() => handleRemoveHouseLocation(h.id)} className="text-slate-300 hover:text-red-400 p-1">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                      <button onClick={() => handleRemoveHouseLocation(h.id)} className="text-slate-300 hover:text-red-400 p-1">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 <div className="p-3 bg-amber-50/40 border border-amber-200 rounded-xl space-y-2 pt-2">
-                  <p className="text-xs font-medium text-slate-700">Cadastrar Novo Item/Equipamento:</p>
+                  <p className="text-xs font-medium text-slate-700">Cadastrar Item/Equipamento:</p>
                   <input
                     type="text"
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
-                    placeholder="Nome do item (ex: Chave d'água, Chave Reserva)"
+                    placeholder="Nome do item (ex: Primeiros Socorros)"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-amber-200 bg-white"
                   />
                   <input
                     type="text"
                     value={newItemLoc}
                     onChange={(e) => setNewItemLoc(e.target.value)}
-                    placeholder="Onde fica exatamente na casa"
+                    placeholder="Onde fica na casa"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-amber-200 bg-white"
                   />
                   <button
@@ -1839,7 +1851,7 @@ export default function App() {
                   rows={3}
                   value={visitorRules}
                   onChange={(e) => setVisitorRules(e.target.value)}
-                  placeholder="Ex: Não abrir a porta para pessoas não identificadas. Deixar pacotes na porta..."
+                  placeholder="Instruções sobre quem pode entrar, entregas..."
                   className="w-full px-3 py-2 text-sm rounded-xl border border-amber-200 bg-amber-50/20"
                 />
               </div>
@@ -1856,7 +1868,7 @@ export default function App() {
                 </div>
 
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Gere um documento PDF limpo com os horários, fotos, relatórios e checklists da criança para mandar para os pais ou imprimir para a geladeira.
+                  Gere um documento PDF limpo com os horários e rotina da criança.
                 </p>
 
                 <button
@@ -1925,7 +1937,7 @@ export default function App() {
                       rows={1}
                       value={foodItems}
                       onChange={(e) => setFoodItems(e.target.value)}
-                      placeholder="Ex: Leite, biscoitos, frutas..."
+                      placeholder="Ex: Leite, frutas..."
                       className="w-full px-3 py-1.5 text-xs rounded-xl border border-emerald-200 bg-emerald-50/20 resize-none"
                     />
                   </div>
@@ -1936,7 +1948,7 @@ export default function App() {
                       rows={1}
                       value={hygieneItems}
                       onChange={(e) => setHygieneItems(e.target.value)}
-                      placeholder="Ex: Fralda tamanho G, lenço umedecido..."
+                      placeholder="Ex: Fraldas, lenços..."
                       className="w-full px-3 py-1.5 text-xs rounded-xl border border-emerald-200 bg-emerald-50/20 resize-none"
                     />
                   </div>
@@ -1947,7 +1959,7 @@ export default function App() {
                       rows={1}
                       value={schoolItems}
                       onChange={(e) => setSchoolItems(e.target.value)}
-                      placeholder="Ex: Cartolina, tinta guache..."
+                      placeholder="Ex: Tinta guache, cadernos..."
                       className="w-full px-3 py-1.5 text-xs rounded-xl border border-emerald-200 bg-emerald-50/20 resize-none"
                     />
                   </div>
@@ -1961,27 +1973,31 @@ export default function App() {
                 </div>
 
                 <div className="space-y-2">
-                  {permissions.map((p) => (
-                    <div key={p.id} className="p-3 bg-emerald-50/20 border border-emerald-100 rounded-xl space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-800">{p.title}</span>
-                        <button
-                          onClick={() => togglePermissionApproved(p.id)}
-                          className={`px-2 py-0.5 text-[10px] rounded-full font-bold border ${
-                            p.approved 
-                              ? 'bg-emerald-600 text-white border-emerald-600' 
-                              : 'bg-amber-100 text-amber-800 border-amber-300'
-                          }`}
-                        >
-                          {p.approved ? 'APROVADO ✅' : 'PENDENTE ⏳'}
-                        </button>
+                  {permissions.length === 0 ? (
+                    <p className="text-xs text-slate-400 py-1">Nenhuma autorização pendente.</p>
+                  ) : (
+                    permissions.map((p) => (
+                      <div key={p.id} className="p-3 bg-emerald-50/20 border border-emerald-100 rounded-xl space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-800">{p.title}</span>
+                          <button
+                            onClick={() => togglePermissionApproved(p.id)}
+                            className={`px-2 py-0.5 text-[10px] rounded-full font-bold border ${
+                              p.approved 
+                                ? 'bg-emerald-600 text-white border-emerald-600' 
+                                : 'bg-amber-100 text-amber-800 border-amber-300'
+                            }`}
+                          >
+                            {p.approved ? 'APROVADO ✅' : 'PENDENTE ⏳'}
+                          </button>
+                        </div>
+                        <p className="text-[11px] text-slate-600">{p.details}</p>
+                        <div className="flex justify-end pt-1">
+                          <button onClick={() => handleRemovePermission(p.id)} className="text-[10px] text-red-400 hover:underline">Remover</button>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-slate-600">{p.details}</p>
-                      <div className="flex justify-end pt-1">
-                        <button onClick={() => handleRemovePermission(p.id)} className="text-[10px] text-red-400 hover:underline">Remover</button>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 <div className="p-3 bg-emerald-50/40 border border-emerald-200 rounded-xl space-y-2 pt-2">
@@ -1990,14 +2006,14 @@ export default function App() {
                     type="text"
                     value={newPermTitle}
                     onChange={(e) => setNewPermTitle(e.target.value)}
-                    placeholder="Título (ex: Passeio no Parque com Carro)"
+                    placeholder="Título da autorização"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-emerald-200 bg-white"
                   />
                   <input
                     type="text"
                     value={newPermDetails}
                     onChange={(e) => setNewPermDetails(e.target.value)}
-                    placeholder="Detalhes (ex: Levar no parque às 15h na sexta)"
+                    placeholder="Detalhes adicionais"
                     className="w-full px-3 py-1.5 text-xs rounded-lg border border-emerald-200 bg-white"
                   />
                   <button
@@ -2014,8 +2030,6 @@ export default function App() {
                   <MessageSquare className="w-4 h-4" />
                   <h2>Central de Recados para os Pais</h2>
                 </div>
-
-                <p className="text-xs text-slate-500">Escolha o tipo de recado que deseja enviar agora:</p>
 
                 <div className="grid grid-cols-3 gap-2">
                   <button
@@ -2075,18 +2089,6 @@ export default function App() {
                   <Send className="w-4 h-4" />
                   <span>Enviar no WhatsApp</span>
                 </a>
-              </div>
-
-              <div className="bg-emerald-100/60 p-4 rounded-2xl border border-emerald-200 flex items-center gap-3">
-                <div className="p-2.5 bg-emerald-600 text-white rounded-xl">
-                  <Camera className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-bold text-emerald-950">Dica Profissional:</h3>
-                  <p className="text-[11px] text-emerald-800 leading-tight">
-                    Após enviar o relatório, anexe 1 ou 2 fotos fofas das atividades do dia no próprio chat do WhatsApp!
-                  </p>
-                </div>
               </div>
 
             </div>
