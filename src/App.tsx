@@ -39,8 +39,7 @@ import {
   HeartPulse,
   Image as ImageIcon,
   FileCheck,
-  ListPlus,
-  RotateCcw
+  ListPlus
 } from 'lucide-react';
 
 interface Course {
@@ -1149,7 +1148,7 @@ export default function App() {
                   onClick={handleClearAllData}
                   className="inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-700 font-medium py-2 px-4 rounded-xl border border-red-200 bg-red-50/50 hover:bg-red-100 transition-all"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <History className="w-3.5 h-3.5" />
                   <span>Zerar todos os dados do aplicativo</span>
                 </button>
               </div>
