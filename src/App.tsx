@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { 
   User, 
   ShieldAlert, 
@@ -2141,6 +2142,7 @@ export default function App() {
         </nav>
       </div>
 
+      <Analytics />
     </div>
   );
 }
