@@ -15,5 +15,23 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <!-- Seletor de Idioma Au Pair Hub -->
+  <div style="display: flex; align-items: center; justify-content: center; padding: 10px; background: #f8f9fa;">
+    <span style="font-size: 14px; font-family: sans-serif; margin-right: 8px;">🌐 Idioma / Language:</span>
+    <div id="google_translate_element"></div>
+  </div>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'pt',
+        includedLanguages: 'en,es,de,fr,it',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
 </html>
+
