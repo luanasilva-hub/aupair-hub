@@ -13,127 +13,46 @@
     <title>AuPair Hub</title>
 
     <style>
-      /* Esconde a barra superior do Google */
-      .goog-te-banner-frame,
-      .goog-te-banner-frame.skiptranslate,
-      iframe.goog-te-banner-frame,
-      iframe[id^=":"] {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
-      }
-
+      /* Evita que a barra do Google empurre a página */
       body {
         top: 0px !important;
         position: static !important;
       }
-
-      /* ESCONDE O POP-UP DE FEEDBACK / TEXTO ORIGINAL DA IMAGEM */
-      #goog-gt-tt,
-      .goog-te-balloon-frame,
-      .goog-tooltip,
-      .goog-tooltip:hover {
-        display: none !important;
-        visibility: hidden !important;
-      }
-
-      .goog-text-highlight {
-        background-color: transparent !important;
-        box-shadow: none !important;
-      }
-
-      /* Oculta o widget original feio */
-      #google_translate_element {
+      .goog-te-banner-frame {
         display: none !important;
       }
-
-      /* Barra de Idiomas Limpa */
-      .custom-lang-bar {
+      
+      /* Barra simples no topo */
+      .top-lang-bar {
         width: 100%;
-        background: #f8f9fa;
+        background-color: #f8f9fa;
         border-bottom: 1px solid #e9ecef;
         padding: 6px 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: system-ui, -apple-system, sans-serif;
         font-size: 13px;
-        box-sizing: border-box;
-      }
-
-      .lang-btn {
-        background: #ffffff;
-        border: 1px solid #ced4da;
-        border-radius: 14px;
-        padding: 3px 10px;
-        cursor: pointer;
-        font-size: 12px;
-        color: #495057;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .lang-btn:hover {
-        background: #e9ecef;
-        color: #212529;
       }
     </style>
   </head>
   <body>
-    <!-- Barra de Idiomas Personalizada -->
-    <div class="custom-lang-bar">
-      <span>🌐 Language:</span>
-      <button class="lang-btn" onclick="restoreOriginalLanguage()">🇧🇷 PT</button>
-      <button class="lang-btn" onclick="translatePage('en')">🇺🇸 EN</button>
-      <button class="lang-btn" onclick="translatePage('es')">🇪🇸 ES</button>
-      <button class="lang-btn" onclick="translatePage('de')">🇩🇪 DE</button>
-    </div>
 
-    <!-- Elemento oculto para o Google Translate -->
-    <div id="google_translate_element"></div>
+    <!-- Barra de Idiomas Simples -->
+    <div class="top-lang-bar">
+      <span>🌐 Idioma / Language:</span>
+      <div id="google_translate_element"></div>
+    </div>
 
     <script type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({
           pageLanguage: 'pt',
           includedLanguages: 'en,es,de,fr,it',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false
         }, 'google_translate_element');
-
-        // Detecção automática se o visitante estiver fora do Brasil
-        setTimeout(function() {
-          var userLang = navigator.language || navigator.userLanguage;
-          if (userLang && !userLang.startsWith('pt')) {
-            var langCode = userLang.substring(0, 2);
-            translatePage(langCode);
-          }
-        }, 1000);
-      }
-
-      function translatePage(langCode) {
-        var select = document.querySelector('.goog-te-combo');
-        if (select) {
-          select.value = langCode;
-          select.dispatchEvent(new Event('change'));
-        }
-      }
-
-      // Função para voltar ao Português sem abrir o balão de feedback
-      function restoreOriginalLanguage() {
-        var iframe = document.querySelector('iframe.goog-te-banner-frame');
-        if (iframe) {
-          var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-          var restoreBtn = innerDoc.querySelector('.goog-close-link');
-          if (restoreBtn) restoreBtn.click();
-        }
-        var select = document.querySelector('.goog-te-combo');
-        if (select) {
-          select.value = 'pt';
-          select.dispatchEvent(new Event('change'));
-        }
       }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
