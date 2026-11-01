@@ -13,46 +13,98 @@
     <title>AuPair Hub</title>
 
     <style>
-      /* Evita que a barra do Google empurre a página */
-      body {
+      /* 1. Bloqueia rigorosamente a barra do Google Chrome e pop-ups */
+      .goog-te-banner-frame,
+      .goog-te-banner-frame.skiptranslate,
+      iframe.goog-te-banner-frame,
+      #goog-gt-tt,
+      .goog-te-balloon-frame,
+      .goog-tooltip {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        opacity: 0 !important;
+      }
+
+      html, body {
         top: 0px !important;
         position: static !important;
+        margin-top: 0px !important;
       }
-      .goog-te-banner-frame {
-        display: none !important;
+
+      /* 2. Oculta COMPLETAMENTE a caixa feia do Google com a seta */
+      #google_translate_element, 
+      .goog-te-gadget {
+        height: 0px !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
       }
-      
-      /* Barra simples no topo */
-      .top-lang-bar {
+
+      /* 3. Estilo da nossa barra personalizada super limpa */
+      .ap-lang-bar {
         width: 100%;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-        padding: 6px 12px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 8px 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 13px;
+        gap: 6px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 12px;
+        box-sizing: border-box;
+      }
+
+      .ap-lang-btn {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 500;
+        color: #495057;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .ap-lang-btn:active {
+        background: #e2e8f0;
       }
     </style>
   </head>
   <body>
 
-    <!-- Barra de Idiomas Simples -->
-    <div class="top-lang-bar">
-      <span>🌐 Idioma / Language:</span>
-      <div id="google_translate_element"></div>
+    <!-- Nossa barra nativa limpa sem caixas do Google -->
+    <div class="ap-lang-bar">
+      <span>🌐</span>
+      <button class="ap-lang-btn" onclick="changeLanguage('pt')">🇧🇷 PT</button>
+      <button class="ap-lang-btn" onclick="changeLanguage('en')">🇺🇸 EN</button>
+      <button class="ap-lang-btn" onclick="changeLanguage('es')">🇪🇸 ES</button>
+      <button class="ap-lang-btn" onclick="changeLanguage('de')">🇩🇪 DE</button>
     </div>
+
+    <!-- Elemento invisível (escondido fora da tela) apenas para o script rodar -->
+    <div id="google_translate_element"></div>
 
     <script type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({
           pageLanguage: 'pt',
           includedLanguages: 'en,es,de,fr,it',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false
         }, 'google_translate_element');
+      }
+
+      function changeLanguage(langCode) {
+        var select = document.querySelector('.goog-te-combo');
+        if (select) {
+          select.value = langCode;
+          select.dispatchEvent(new Event('change'));
+        }
       }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
