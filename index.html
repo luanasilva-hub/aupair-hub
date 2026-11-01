@@ -13,70 +13,77 @@
     <title>AuPair Hub</title>
 
     <style>
-      /* Esconde completamente as barras nativas e banners do Google Translate */
-      .goog-te-banner-frame,
-      .goog-te-banner-frame.skiptranslate,
-      iframe.goog-te-banner-frame,
-      #goog-gt-tt,
-      .goog-te-balloon-frame {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        opacity: 0 !important;
+      /* Bloqueia totalmente a injeção do banner nativo do Google Chrome */
+      html {
+        margin-top: 0px !important;
       }
-
+      
       body {
         top: 0px !important;
         position: static !important;
       }
 
-      /* Oculta o widget padrão feio do Google */
-      #google_translate_element {
+      .goog-te-banner-frame, 
+      .goog-te-banner,
+      iframe[id^=":"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+      }
+
+      /* Oculta os elementos nativos do widget */
+      #google_translate_element,
+      .goog-te-spinner-pos,
+      .goog-te-balloon-frame {
         display: none !important;
       }
 
-      /* Estilo da barra de idioma limpa do Au Pair Hub */
-      .custom-lang-bar {
+      /* Barra de Idiomas Moderna */
+      .lang-bar-container {
         width: 100%;
-        background: #f8f9fa;
+        background-color: #f8f9fa;
         border-bottom: 1px solid #e9ecef;
-        padding: 6px 12px;
+        padding: 8px 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 12px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        gap: 8px;
+        font-family: system-ui, -apple-system, sans-serif;
         font-size: 13px;
+        color: #333;
+        box-sizing: border-box;
       }
 
       .lang-btn {
-        background: transparent;
+        background: #ffffff;
         border: 1px solid #ced4da;
-        border-radius: 14px;
-        padding: 3px 10px;
+        border-radius: 16px;
+        padding: 4px 12px;
         cursor: pointer;
         font-size: 12px;
+        font-weight: 500;
         color: #495057;
         transition: all 0.2s ease;
       }
 
       .lang-btn:hover {
         background: #e9ecef;
-        color: #212529;
+        border-color: #adb5bd;
       }
     </style>
   </head>
   <body>
-    <!-- Seletor de Idioma Customizado e Limpo -->
-    <div class="custom-lang-bar">
-      <span>🌐 Idioma / Language:</span>
-      <button class="lang-btn" onclick="translatePage('pt')">🇧🇷 PT</button>
-      <button class="lang-btn" onclick="translatePage('en')">🇺🇸 EN</button>
-      <button class="lang-btn" onclick="translatePage('es')">🇪🇸 ES</button>
-      <button class="lang-btn" onclick="translatePage('de')">🇩🇪 DE</button>
+
+    <!-- Barra de Idiomas Superior -->
+    <div class="lang-bar-container">
+      <span>🌐 Language:</span>
+      <button class="lang-btn" onclick="changeLanguage('pt')">🇧🇷 PT</button>
+      <button class="lang-btn" onclick="changeLanguage('en')">🇺🇸 EN</button>
+      <button class="lang-btn" onclick="changeLanguage('es')">🇪🇸 ES</button>
+      <button class="lang-btn" onclick="changeLanguage('de')">🇩🇪 DE</button>
     </div>
 
-    <!-- Elemento oculto do Google para processar a tradução -->
     <div id="google_translate_element"></div>
 
     <script type="text/javascript">
@@ -84,20 +91,21 @@
         new google.translate.TranslateElement({
           pageLanguage: 'pt',
           includedLanguages: 'en,es,de,fr,it',
+          layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
           autoDisplay: false
         }, 'google_translate_element');
 
-        // Detecção automática sem disparar o banner feio do Google
+        // Detecção automática silenciosa
         setTimeout(function() {
           var userLang = navigator.language || navigator.userLanguage;
           if (userLang && !userLang.startsWith('pt')) {
-            var langCode = userLang.substring(0, 2);
-            translatePage(langCode);
+            var targetLang = userLang.substring(0, 2);
+            changeLanguage(targetLang);
           }
-        }, 800);
+        }, 1200);
       }
 
-      function translatePage(langCode) {
+      function changeLanguage(langCode) {
         var select = document.querySelector('.goog-te-combo');
         if (select) {
           select.value = langCode;
@@ -105,6 +113,7 @@
         }
       }
     </script>
+
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <div id="root"></div>
