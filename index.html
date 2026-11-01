@@ -13,52 +13,60 @@
     <title>AuPair Hub</title>
   </head>
   <body>
-    <!-- Barra de Idioma no Topo com Detecção Automática -->
-<div style="width: 100%; background: #f0f4f8; border-bottom: 1px solid #d0d7de; padding: 8px; text-align: center;">
-  <span style="font-size: 13px; font-family: sans-serif; margin-right: 6px; color: #333;">🌐 Language / Idioma:</span>
-  <div id="google_translate_element" style="display: inline-block;"></div>
-</div>
+    <!-- Barra de Idioma Compacta -->
+    <div style="width: 100%; background: #f0f4f8; border-bottom: 1px solid #d0d7de; padding: 4px 8px; text-align: center; display: flex; align-items: center; justify-content: center;">
+      <span style="font-size: 12px; font-family: sans-serif; margin-right: 6px; color: #444;">🌐 Language:</span>
+      <div id="google_translate_element" style="display: inline-block;"></div>
+    </div>
 
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'pt',
-      includedLanguages: 'en,es,de,fr,it',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-      autoDisplay: false
-    }, 'google_translate_element');
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'pt',
+          includedLanguages: 'en,es,de,fr,it',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
 
-    // Tradução automática baseada no idioma do sistema/navegador
-    setTimeout(function() {
-      var userLang = navigator.language || navigator.userLanguage;
-      if (userLang && !userLang.startsWith('pt')) {
-        var select = document.querySelector('.goog-te-combo');
-        if (select) {
-          var targetLang = userLang.substring(0, 2);
-          select.value = targetLang;
-          select.dispatchEvent(new Event('change'));
-        }
+        setTimeout(function() {
+          var userLang = navigator.language || navigator.userLanguage;
+          if (userLang && !userLang.startsWith('pt')) {
+            var select = document.querySelector('.goog-te-combo');
+            if (select) {
+              var targetLang = userLang.substring(0, 2);
+              select.value = targetLang;
+              select.dispatchEvent(new Event('change'));
+            }
+          }
+        }, 1000);
       }
-    }, 1000);
-  }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-<style>
-  .goog-te-banner-frame { display: none !important; }
-  body { top: 0px !important; position: static !important; }
-  .goog-te-gadget-icon { display: none !important; }
-  .goog-te-gadget-simple {
-    background-color: #ffffff !important;
-    border: 1px solid #ccc !important;
-    padding: 4px 10px !important;
-    border-radius: 16px !important;
-    font-size: 13px !important;
-  }
-</style>
+    <style>
+      .goog-te-banner-frame { display: none !important; }
+      body { top: 0px !important; position: static !important; }
+      .goog-te-gadget-icon { display: none !important; }
+      
+      .goog-te-gadget-simple {
+        background-color: #ffffff !important;
+        border: 1px solid #d0d7de !important;
+        padding: 2px 8px !important;
+        border-radius: 12px !important;
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        height: 24px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+      }
+      
+      .goog-te-menu-value span {
+        font-size: 11px !important;
+        color: #444 !important;
+      }
+    </style>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-
-</body>
+  </body>
 </html>
-
