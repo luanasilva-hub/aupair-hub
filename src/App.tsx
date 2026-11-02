@@ -39,9 +39,10 @@ import {
   HeartPulse,
   Image as ImageIcon,
   FileCheck,
-  ListPlus
+  ListPlus,
+  Search
 } from 'lucide-react';
-
+ 
 interface Course {
   id: string;
   name: string;
@@ -49,13 +50,13 @@ interface Course {
   hours: string;
   completed: boolean;
 }
-
+ 
 interface MilestoneGoal {
   id: string;
   title: string;
   completed: boolean;
 }
-
+ 
 interface ActivityItem {
   id: string;
   title: string;
@@ -63,14 +64,14 @@ interface ActivityItem {
   duration: string;
   notes: string;
 }
-
+ 
 interface WeeklyEvent {
   id: string;
   day: string;
   time: string;
   title: string;
 }
-
+ 
 interface ChildSchedule {
   id: string;
   name: string;
@@ -94,13 +95,13 @@ interface ChildSchedule {
   activities: ActivityItem[];
   weeklyEvents: WeeklyEvent[];
 }
-
+ 
 interface EmergencyContact {
   id: string;
   label: string;
   phone: string;
 }
-
+ 
 interface Medication {
   id: string;
   name: string;
@@ -108,20 +109,20 @@ interface Medication {
   time: string;
   alarmActive?: boolean;
 }
-
+ 
 interface HouseLocation {
   id: string;
   item: string;
   location: string;
 }
-
+ 
 interface PermissionForm {
   id: string;
   title: string;
   details: string;
   approved: boolean;
 }
-
+ 
 interface SavedDay {
   id: string;
   date: string;
@@ -129,10 +130,10 @@ interface SavedDay {
   energyLevel: number;
   summaryText: string;
 }
-
+ 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'aupair' | 'schedule' | 'safety' | 'parents'>('aupair');
-
+ 
   // ==========================================
   // --- ABA 1: MEU ESPAÇO ---
   // ==========================================
@@ -149,7 +150,7 @@ export default function App() {
     return saved ? parseFloat(saved) : 0;
   });
   const [addHoursInput, setAddHoursInput] = useState<string>('');
-
+ 
   const [courses, setCourses] = useState<Course[]>(() => {
     const saved = localStorage.getItem('courses');
     return saved ? JSON.parse(saved) : [];
@@ -158,13 +159,13 @@ export default function App() {
   const [newCourseInst, setNewCourseInst] = useState('');
   const [newCourseHours, setNewCourseHours] = useState('');
   const [showAddCourseForm, setShowAddCourseForm] = useState(false);
-
+ 
   const [goals, setGoals] = useState<MilestoneGoal[]>(() => {
     const saved = localStorage.getItem('goals');
     return saved ? JSON.parse(saved) : [];
   });
   const [newGoalTitle, setNewGoalTitle] = useState('');
-
+ 
   const [auPairMood, setAuPairMood] = useState(() => localStorage.getItem('auPairMood') || 'Bem');
   const [energyLevel, setEnergyLevel] = useState<number>(() => {
     const saved = localStorage.getItem('energyLevel');
@@ -173,12 +174,12 @@ export default function App() {
   const [auPairConquest, setAuPairConquest] = useState(() => localStorage.getItem('auPairConquest') || '');
   const [auPairChallenge, setAuPairChallenge] = useState(() => localStorage.getItem('auPairChallenge') || '');
   const [auPairGratitude, setAuPairGratitude] = useState(() => localStorage.getItem('auPairGratitude') || '');
-
+ 
   const [history, setHistory] = useState<SavedDay[]>(() => {
     const saved = localStorage.getItem('history');
     return saved ? JSON.parse(saved) : [];
   });
-
+ 
   useEffect(() => { localStorage.setItem('auPairName', auPairName); }, [auPairName]);
   useEffect(() => { localStorage.setItem('auPairAge', auPairAge); }, [auPairAge]);
   useEffect(() => { localStorage.setItem('weeklyStipend', weeklyStipend); }, [weeklyStipend]);
@@ -192,7 +193,7 @@ export default function App() {
   useEffect(() => { localStorage.setItem('auPairChallenge', auPairChallenge); }, [auPairChallenge]);
   useEffect(() => { localStorage.setItem('auPairGratitude', auPairGratitude); }, [auPairGratitude]);
   useEffect(() => { localStorage.setItem('history', JSON.stringify(history)); }, [history]);
-
+ 
   const handleAddHours = () => {
     const parsed = parseFloat(addHoursInput);
     if (!isNaN(parsed) && parsed > 0) {
@@ -201,20 +202,20 @@ export default function App() {
       setAddHoursInput('');
     }
   };
-
+ 
   const handleResetWeeklyHours = () => {
     if (confirm('Deseja zerar a contagem de horas da semana?')) {
       setWeeklyHours(0);
     }
   };
-
+ 
   const handleClearAllData = () => {
     if (confirm('⚠️ ATENÇÃO: Deseja apagar TODOS os dados e zerar o aplicativo por completo?')) {
       localStorage.clear();
       window.location.reload();
     }
   };
-
+ 
   const handleAddCourse = () => {
     if (!newCourseName.trim()) return;
     const newC: Course = {
@@ -230,29 +231,29 @@ export default function App() {
     setNewCourseHours('');
     setShowAddCourseForm(false);
   };
-
+ 
   const toggleCourseStatus = (id: string) => {
     setCourses(courses.map(c => c.id === id ? { ...c, completed: !c.completed } : c));
   };
-
+ 
   const handleRemoveCourse = (id: string) => {
     setCourses(courses.filter(c => c.id !== id));
   };
-
+ 
   const handleAddGoal = () => {
     if (!newGoalTitle.trim()) return;
     setGoals([...goals, { id: Date.now().toString(), title: newGoalTitle, completed: false }]);
     setNewGoalTitle('');
   };
-
+ 
   const toggleGoalStatus = (id: string) => {
     setGoals(goals.map(g => g.id === id ? { ...g, completed: !g.completed } : g));
   };
-
+ 
   const handleRemoveGoal = (id: string) => {
     setGoals(goals.filter(g => g.id !== id));
   };
-
+ 
   // ==========================================
   // --- ABA 2: CRONOGRAMA, ESCOLA & HÁBITOS ---
   // ==========================================
@@ -285,20 +286,20 @@ export default function App() {
     ];
   });
   const [selectedChildId, setSelectedChildId] = useState<string>('1');
-
+ 
   const [newActTitle, setNewActTitle] = useState('');
   const [newActCategory, setNewActCategory] = useState('Artes');
   const [newActDuration, setNewActDuration] = useState('');
   const [newActNotes, setNewActNotes] = useState('');
-
+ 
   const [newEventDay, setNewEventDay] = useState('Segunda-feira');
   const [newEventTime, setNewEventTime] = useState('');
   const [newEventTitle, setNewEventTitle] = useState('');
-
+ 
   useEffect(() => { localStorage.setItem('children', JSON.stringify(children)); }, [children]);
-
+ 
   const activeChild = children.find(c => c.id === selectedChildId) || children[0];
-
+ 
   const handleAddChild = () => {
     const newId = Date.now().toString();
     const newChild: ChildSchedule = {
@@ -327,7 +328,7 @@ export default function App() {
     setChildren([...children, newChild]);
     setSelectedChildId(newId);
   };
-
+ 
   const handleRemoveChild = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (children.length === 1) {
@@ -340,7 +341,7 @@ export default function App() {
       setSelectedChildId(updated[0].id);
     }
   };
-
+ 
   const updateActiveChild = (field: keyof ChildSchedule, value: any) => {
     setChildren(children.map(c => {
       if (c.id === selectedChildId) {
@@ -349,7 +350,7 @@ export default function App() {
       return c;
     }));
   };
-
+ 
   const handleAddActivity = () => {
     if (!newActTitle.trim()) return;
     const newAct: ActivityItem = {
@@ -365,12 +366,12 @@ export default function App() {
     setNewActDuration('');
     setNewActNotes('');
   };
-
+ 
   const handleRemoveActivity = (actId: string) => {
     const updated = (activeChild.activities || []).filter(a => a.id !== actId);
     updateActiveChild('activities', updated);
   };
-
+ 
   const handleAddWeeklyEvent = () => {
     if (!newEventTitle.trim()) return;
     const newEv: WeeklyEvent = {
@@ -384,12 +385,12 @@ export default function App() {
     setNewEventTitle('');
     setNewEventTime('');
   };
-
+ 
   const handleRemoveWeeklyEvent = (evId: string) => {
     const updated = (activeChild.weeklyEvents || []).filter(e => e.id !== evId);
     updateActiveChild('weeklyEvents', updated);
   };
-
+ 
   const handleArchiveDay = () => {
     const todayStr = new Date().toLocaleDateString('pt-BR');
     
@@ -400,13 +401,13 @@ export default function App() {
       energyLevel: energyLevel,
       summaryText: `Conquista: ${auPairConquest || 'N/A'} | Desafio: ${auPairChallenge || 'N/A'}`
     };
-
+ 
     setHistory([newDay, ...history]);
     
     setAuPairConquest('');
     setAuPairChallenge('');
     setAuPairGratitude('');
-
+ 
     const resetChildren = children.map(c => ({
       ...c,
       bathDone: false,
@@ -421,7 +422,7 @@ export default function App() {
     
     alert(`Diário do dia ${todayStr} arquivado com sucesso!`);
   };
-
+ 
   // ==========================================
   // --- ABA 3: SEGURANÇA & EMERGÊNCIA ---
   // ==========================================
@@ -431,13 +432,13 @@ export default function App() {
   });
   const [newContactLabel, setNewContactLabel] = useState('');
   const [newContactPhone, setNewContactPhone] = useState('');
-
+ 
   const [allergiesList, setAllergiesList] = useState<string[]>(() => {
     const saved = localStorage.getItem('allergiesList');
     return saved ? JSON.parse(saved) : [];
   });
   const [newAllergy, setNewAllergy] = useState('');
-
+ 
   const [medicationsList, setMedicationsList] = useState<Medication[]>(() => {
     const saved = localStorage.getItem('medicationsList');
     return saved ? JSON.parse(saved) : [];
@@ -445,27 +446,27 @@ export default function App() {
   const [newMedName, setNewMedName] = useState('');
   const [newMedDose, setNewMedDose] = useState('');
   const [newMedTime, setNewMedTime] = useState('');
-
+ 
   const [houseLocations, setHouseLocations] = useState<HouseLocation[]>(() => {
     const saved = localStorage.getItem('houseLocations');
     return saved ? JSON.parse(saved) : [];
   });
   const [newItemName, setNewItemName] = useState('');
   const [newItemLoc, setNewItemLoc] = useState('');
-
+ 
   const [visitorRules, setVisitorRules] = useState(() => localStorage.getItem('visitorRules') || '');
-
+ 
   useEffect(() => { localStorage.setItem('contacts', JSON.stringify(contacts)); }, [contacts]);
   useEffect(() => { localStorage.setItem('allergiesList', JSON.stringify(allergiesList)); }, [allergiesList]);
   useEffect(() => { localStorage.setItem('medicationsList', JSON.stringify(medicationsList)); }, [medicationsList]);
   useEffect(() => { localStorage.setItem('houseLocations', JSON.stringify(houseLocations)); }, [houseLocations]);
   useEffect(() => { localStorage.setItem('visitorRules', visitorRules); }, [visitorRules]);
-
+ 
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
       const currentFormatted = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
+ 
       medicationsList.forEach(med => {
         if (med.alarmActive && med.time === currentFormatted) {
           if ('Notification' in window && Notification.permission === 'granted') {
@@ -478,15 +479,15 @@ export default function App() {
         }
       });
     }, 30000);
-
+ 
     return () => clearInterval(timer);
   }, [medicationsList]);
-
+ 
   const toggleAlarm = (id: string) => {
     if ('Notification' in window && Notification.permission !== 'granted') {
       Notification.requestPermission();
     }
-
+ 
     setMedicationsList(medicationsList.map(med => {
       if (med.id === id) {
         const nextState = !med.alarmActive;
@@ -498,28 +499,28 @@ export default function App() {
       return med;
     }));
   };
-
+ 
   const handleAddContact = () => {
     if (!newContactLabel.trim() || !newContactPhone.trim()) return;
     setContacts([...contacts, { id: Date.now().toString(), label: newContactLabel, phone: newContactPhone }]);
     setNewContactLabel('');
     setNewContactPhone('');
   };
-
+ 
   const handleRemoveContact = (id: string) => {
     setContacts(contacts.filter(c => c.id !== id));
   };
-
+ 
   const handleAddAllergy = () => {
     if (!newAllergy.trim()) return;
     setAllergiesList([...allergiesList, newAllergy]);
     setNewAllergy('');
   };
-
+ 
   const handleRemoveAllergy = (item: string) => {
     setAllergiesList(allergiesList.filter(a => a !== item));
   };
-
+ 
   const handleAddMedication = () => {
     if (!newMedName.trim()) return;
     setMedicationsList([...medicationsList, {
@@ -533,22 +534,22 @@ export default function App() {
     setNewMedDose('');
     setNewMedTime('');
   };
-
+ 
   const handleRemoveMedication = (id: string) => {
     setMedicationsList(medicationsList.filter(m => m.id !== id));
   };
-
+ 
   const handleAddHouseLocation = () => {
     if (!newItemName.trim() || !newItemLoc.trim()) return;
     setHouseLocations([...houseLocations, { id: Date.now().toString(), item: newItemName, location: newItemLoc }]);
     setNewItemName('');
     setNewItemLoc('');
   };
-
+ 
   const handleRemoveHouseLocation = (id: string) => {
     setHouseLocations(houseLocations.filter(h => h.id !== id));
   };
-
+ 
   // ==========================================
   // --- ABA 4: CENTRAL DOS PAIS ---
   // ==========================================
@@ -557,33 +558,33 @@ export default function App() {
   const [foodItems, setFoodItems] = useState('');
   const [hygieneItems, setHygieneItems] = useState('');
   const [schoolItems, setSchoolItems] = useState('');
-
+ 
   const [photoUrls, setPhotoUrls] = useState<string[]>(() => {
     const saved = localStorage.getItem('photoUrls');
     return saved ? JSON.parse(saved) : [];
   });
   const [newPhotoInput, setNewPhotoInput] = useState('');
-
+ 
   const [permissions, setPermissions] = useState<PermissionForm[]>(() => {
     const saved = localStorage.getItem('permissions');
     return saved ? JSON.parse(saved) : [];
   });
   const [newPermTitle, setNewPermTitle] = useState('');
   const [newPermDetails, setNewPermDetails] = useState('');
-
+ 
   useEffect(() => { localStorage.setItem('photoUrls', JSON.stringify(photoUrls)); }, [photoUrls]);
   useEffect(() => { localStorage.setItem('permissions', JSON.stringify(permissions)); }, [permissions]);
-
+ 
   const handleAddPhotoUrl = () => {
     if (!newPhotoInput.trim()) return;
     setPhotoUrls([...photoUrls, newPhotoInput]);
     setNewPhotoInput('');
   };
-
+ 
   const handleRemovePhotoUrl = (index: number) => {
     setPhotoUrls(photoUrls.filter((_, i) => i !== index));
   };
-
+ 
   const handleAddPermission = () => {
     if (!newPermTitle.trim()) return;
     setPermissions([...permissions, {
@@ -595,20 +596,20 @@ export default function App() {
     setNewPermTitle('');
     setNewPermDetails('');
   };
-
+ 
   const togglePermissionApproved = (id: string) => {
     setPermissions(permissions.map(p => p.id === id ? { ...p, approved: !p.approved } : p));
   };
-
+ 
   const handleRemovePermission = (id: string) => {
     setPermissions(permissions.filter(p => p.id !== id));
   };
-
+ 
   const buildWhatsAppText = () => {
     if (msgType === 'arrival') {
       return `Olá! Passando para avisar que já cheguei e está tudo ótimo por aqui! 😊🌸\n\nAu Pair: ${auPairName || 'Au Pair'}`;
     }
-
+ 
     if (msgType === 'shopping') {
       let text = `Olá! Lembrete de reposição de itens:\n\n🛍️ *LISTA DE REPOSIÇÃO:*\n`;
       if (foodItems) text += `\n🍎 *Alimentação:* ${foodItems}`;
@@ -618,10 +619,10 @@ export default function App() {
       text += `\n\nObrigada! ❤️`;
       return text;
     }
-
+ 
     let msg = `*AuPair Hub - Daily Care Report* 🌸\n\n`;
     if (auPairName) msg += `👤 *Au Pair:* ${auPairName}\n\n`;
-
+ 
     children.forEach((child, index) => {
       msg += `--- *${child.name || `Criança ${index + 1}`}* (${child.age || 'Idade N/I'}) ---\n`;
       if (child.schoolDismissal) msg += `🏫 *Saída da Escola:* ${child.schoolDismissal} (${child.pickupInfo || 'N/A'})\n`;
@@ -633,28 +634,28 @@ export default function App() {
       if (child.activities && child.activities.length > 0) {
         msg += `🎨 *Atividades de Hoje:* ${child.activities.map(a => `${a.title} (${a.category})`).join(', ')}\n`;
       }
-
+ 
       const checks = [];
       if (child.bathDone) checks.push('Banho tomado');
       if (child.homeworkDone) checks.push('Dever de casa OK');
       if (child.screenTimeDone) checks.push('Tempo de tela OK');
       if (checks.length > 0) msg += `✅ *Checklist:* ${checks.join(', ')}\n`;
-
+ 
       msg += `\n`;
     });
-
+ 
     if (photoUrls.length > 0) {
       msg += `📷 *Fotos do Dia (${photoUrls.length}):* \n${photoUrls.join('\n')}\n\n`;
     }
-
+ 
     msg += `Tudo sob controle por aqui! Tenham uma excelente noite! ❤️`;
     return msg;
   };
-
+ 
   const handlePrintPDF = () => {
     window.print();
   };
-
+ 
   const getPageBg = () => {
     switch (activeTab) {
       case 'aupair': return 'bg-rose-50/60';
@@ -664,7 +665,7 @@ export default function App() {
       default: return 'bg-rose-50/60';
     }
   };
-
+ 
   return (
     <div className={`min-h-screen text-slate-800 pb-48 transition-colors duration-300 ${getPageBg()}`}>
       
@@ -679,14 +680,14 @@ export default function App() {
             <p className="text-xs font-semibold text-slate-400">Data: ____/____/________</p>
           </div>
         </div>
-
+ 
         {children.map((child) => (
           <div key={child.id} className="mb-6 border border-slate-200 rounded-xl p-4">
             <div className="flex justify-between items-center mb-2 border-b pb-2">
               <h2 className="font-bold text-base text-slate-800">{child.name || 'Criança'} ({child.age || 'Idade N/I'})</h2>
               <span className="text-xs text-slate-500">Saída Escola: {child.schoolDismissal || 'N/I'}</span>
             </div>
-
+ 
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <p className="font-bold text-slate-700 mb-1">🕒 Rotina & Horários:</p>
@@ -715,7 +716,7 @@ export default function App() {
                 <p className="text-slate-600 bg-slate-50 p-2 rounded">{child.mealsNotes || 'Anote aqui o que comeu...'}</p>
               </div>
             </div>
-
+ 
             {child.insuranceName && (
               <div className="mt-3 pt-2 border-t text-[11px] text-slate-600">
                 <p>🏥 <strong>Plano de Saúde:</strong> {child.insuranceName} ({child.insurancePolicy}) | <strong>Hospital:</strong> {child.hospitalPreference}</p>
@@ -724,7 +725,7 @@ export default function App() {
             )}
           </div>
         ))}
-
+ 
         {photoUrls.length > 0 && (
           <div className="mb-6 border border-slate-200 rounded-xl p-4 text-xs">
             <p className="font-bold text-slate-700 mb-2">📷 Registros Fotográficos do Dia ({photoUrls.length}):</p>
@@ -735,7 +736,7 @@ export default function App() {
             </div>
           </div>
         )}
-
+ 
         {permissions.length > 0 && (
           <div className="mb-6 border border-emerald-200 bg-emerald-50/20 rounded-xl p-4 text-xs">
             <p className="font-bold text-emerald-800 mb-2">📄 AUTORIZAÇÕES DOS PAIS:</p>
@@ -744,7 +745,7 @@ export default function App() {
             ))}
           </div>
         )}
-
+ 
         <div className="border border-red-200 bg-red-50/30 rounded-xl p-4 text-xs mt-6">
           <h3 className="font-bold text-red-700 mb-2">⚠️ PROTOCOLO DE SEGURANÇA & EMERGÊNCIA</h3>
           <div className="grid grid-cols-2 gap-4">
@@ -769,7 +770,7 @@ export default function App() {
           )}
         </div>
       </div>
-
+ 
       {/* INTERFACE MOBILE */}
       <div className="print:hidden">
         {/* Cabeçalho */}
@@ -801,9 +802,9 @@ export default function App() {
             </div>
           </div>
         </header>
-
+ 
         <main className="max-w-md mx-auto p-4 space-y-4">
-
+ 
           {/* ABA 1: MEU ESPAÇO */}
           {activeTab === 'aupair' && (
             <div className="space-y-4 animate-fade-in">
@@ -814,7 +815,7 @@ export default function App() {
                     <h2>Perfil & Contrato de Trabalho</h2>
                   </div>
                 </div>
-
+ 
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Seu Nome</label>
@@ -848,7 +849,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="bg-gradient-to-br from-rose-500 to-rose-600 p-5 rounded-2xl text-white shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 font-medium text-rose-100 text-sm">
@@ -859,7 +860,7 @@ export default function App() {
                     Limite: 45h/sem
                   </span>
                 </div>
-
+ 
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <div className="bg-white/10 p-3 rounded-xl border border-white/10">
                     <p className="text-[10px] text-rose-100 font-medium">ESTA SEMANA</p>
@@ -871,14 +872,14 @@ export default function App() {
                       />
                     </div>
                   </div>
-
+ 
                   <div className="bg-white/10 p-3 rounded-xl border border-white/10">
                     <p className="text-[10px] text-rose-100 font-medium">TOTAL ACUMULADO</p>
                     <p className="text-2xl font-bold">{totalHours}h</p>
                     <p className="text-[10px] text-rose-200 mt-1">Comprovação em Agências</p>
                   </div>
                 </div>
-
+ 
                 <div className="flex gap-2 pt-1">
                   <input
                     type="number"
@@ -894,7 +895,7 @@ export default function App() {
                     + Registrar
                   </button>
                 </div>
-
+ 
                 <div className="flex justify-end pt-1">
                   <button 
                     onClick={handleResetWeeklyHours} 
@@ -904,7 +905,7 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-rose-600 font-semibold text-sm">
@@ -919,7 +920,7 @@ export default function App() {
                     <span>Adicionar</span>
                   </button>
                 </div>
-
+ 
                 {showAddCourseForm && (
                   <div className="p-3 bg-rose-50/40 border border-rose-200 rounded-xl space-y-2 animate-fade-in">
                     <input
@@ -951,7 +952,7 @@ export default function App() {
                     </div>
                   </div>
                 )}
-
+ 
                 <div className="space-y-2">
                   {courses.length === 0 ? (
                     <p className="text-xs text-slate-400 text-center py-2">Nenhum curso cadastrado ainda.</p>
@@ -978,13 +979,13 @@ export default function App() {
                   )}
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-rose-600 font-semibold text-sm">
                   <Target className="w-4 h-4" />
                   <h2>Metas do Intercâmbio & Visto</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {goals.length === 0 ? (
                     <p className="text-xs text-slate-400 py-1">Nenhuma meta cadastrada.</p>
@@ -1007,7 +1008,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="flex gap-2 pt-1">
                   <input
                     type="text"
@@ -1024,13 +1025,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 text-rose-600 font-semibold text-sm">
                   <Smile className="w-4 h-4" />
                   <h2>Diário de Bordo & Saúde Mental</h2>
                 </div>
-
+ 
                 <div>
                   <div className="flex justify-between items-center mb-1">
                     <label className="text-xs font-medium text-slate-600">Nível de Energia Hoje</label>
@@ -1052,7 +1053,7 @@ export default function App() {
                     ))}
                   </div>
                 </div>
-
+ 
                 <div>
                   <label className="text-xs font-medium text-slate-600 block mb-2">Humor Predominante</label>
                   <div className="grid grid-cols-3 gap-2">
@@ -1071,7 +1072,7 @@ export default function App() {
                     ))}
                   </div>
                 </div>
-
+ 
                 <div className="space-y-3 pt-2">
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Superação ou Conquista do Dia</label>
@@ -1083,7 +1084,7 @@ export default function App() {
                       className="w-full px-3 py-2 text-sm rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-rose-50/20 resize-none"
                     />
                   </div>
-
+ 
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Maior Desafio do Dia</label>
                     <textarea
@@ -1094,7 +1095,7 @@ export default function App() {
                       className="w-full px-3 py-2 text-sm rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-rose-50/20 resize-none"
                     />
                   </div>
-
+ 
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Momento de Gratidão</label>
                     <textarea
@@ -1105,7 +1106,7 @@ export default function App() {
                       className="w-full px-3 py-2 text-sm rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-rose-50/20 resize-none"
                     />
                   </div>
-
+ 
                   <button
                     onClick={handleArchiveDay}
                     className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm"
@@ -1115,13 +1116,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-rose-600 font-semibold text-sm">
                   <History className="w-4 h-4" />
                   <h2>Histórico de Diários Anteriores</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {history.length === 0 ? (
                     <p className="text-xs text-slate-400 py-2">Nenhum dia arquivado no histórico ainda.</p>
@@ -1141,7 +1142,7 @@ export default function App() {
                   )}
                 </div>
               </div>
-
+ 
               {/* BOTÃO DE RESET COMPLETO */}
               <div className="pt-4 text-center">
                 <button
@@ -1152,16 +1153,16 @@ export default function App() {
                   <span>Zerar todos os dados do aplicativo</span>
                 </button>
               </div>
-
+ 
             </div>
           )}
-
+ 
           {/* ABA 2: CRONOGRAMA, ESCOLA & HÁBITOS */}
           {activeTab === 'schedule' && (
             <div className="space-y-4 animate-fade-in">
               <div className="bg-white p-3 rounded-2xl border border-sky-100 shadow-sm space-y-2">
                 <span className="text-xs font-semibold text-sky-600 uppercase tracking-wider block px-1">Crianças Cadastradas:</span>
-
+ 
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                   {children.map((child) => {
                     const isSelected = child.id === selectedChildId;
@@ -1186,7 +1187,7 @@ export default function App() {
                       </button>
                     );
                   })}
-
+ 
                   <button
                     onClick={handleAddChild}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border border-dashed border-sky-300 text-sky-600 hover:bg-sky-50 transition-all whitespace-nowrap"
@@ -1196,13 +1197,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <User className="w-4 h-4" />
                   <h2>Dados da Criança</h2>
                 </div>
-
+ 
                 <div className="grid grid-cols-3 gap-2">
                   <div className="col-span-2">
                     <label className="text-xs font-medium text-slate-600 block mb-1">Nome</label>
@@ -1226,13 +1227,13 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <Moon className="w-4 h-4" />
                   <h2>Sesta, Fraldas & Banheiro</h2>
                 </div>
-
+ 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Horário da Sesta (Nap Time)</label>
@@ -1244,7 +1245,7 @@ export default function App() {
                       className="w-full px-3 py-2 text-xs rounded-xl border border-sky-200 bg-sky-50/20"
                     />
                   </div>
-
+ 
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Trocas de Fralda Hoje</label>
                     <div className="flex items-center gap-2">
@@ -1266,7 +1267,7 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-
+ 
                 <div className="pt-1">
                   <button
                     onClick={() => updateActiveChild('pottySuccess', !activeChild.pottySuccess)}
@@ -1281,7 +1282,7 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
@@ -1289,7 +1290,7 @@ export default function App() {
                     <h2>Atividades Lúdicas de Hoje</h2>
                   </div>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {(!activeChild.activities || activeChild.activities.length === 0) ? (
                     <p className="text-xs text-slate-400 py-1">Nenhuma atividade registrada hoje.</p>
@@ -1308,7 +1309,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="p-3 bg-sky-50/40 border border-sky-200 rounded-xl space-y-2 pt-2">
                   <p className="text-xs font-semibold text-slate-700">Registrar Nova Brincadeira:</p>
                   <input
@@ -1353,13 +1354,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <CalendarDays className="w-4 h-4" />
                   <h2>Agenda Semanal Recorrente</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {(!activeChild.weeklyEvents || activeChild.weeklyEvents.length === 0) ? (
                     <p className="text-xs text-slate-400 py-1">Nenhum compromisso fixo cadastrado.</p>
@@ -1377,7 +1378,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="p-3 bg-sky-50/40 border border-sky-200 rounded-xl space-y-2">
                   <p className="text-xs font-semibold text-slate-700">Adicionar Compromisso Fixo:</p>
                   <input
@@ -1417,13 +1418,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <Bus className="w-4 h-4" />
                   <h2>Escola & Transporte</h2>
                 </div>
-
+ 
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">Horário Saída</label>
@@ -1446,7 +1447,7 @@ export default function App() {
                     />
                   </div>
                 </div>
-
+ 
                 <div>
                   <label className="text-xs font-medium text-slate-600 block mb-1">Itens da Mochila / Lembrete</label>
                   <input
@@ -1458,13 +1459,13 @@ export default function App() {
                   />
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <CheckSquare className="w-4 h-4" />
                   <h2>Checklist de Cuidados Diários</h2>
                 </div>
-
+ 
                 <div className="grid grid-cols-3 gap-2 pt-1">
                   <button
                     onClick={() => updateActiveChild('bathDone', !activeChild.bathDone)}
@@ -1477,7 +1478,7 @@ export default function App() {
                     <Check className="w-3.5 h-3.5" />
                     <span>Banho</span>
                   </button>
-
+ 
                   <button
                     onClick={() => updateActiveChild('homeworkDone', !activeChild.homeworkDone)}
                     className={`flex items-center justify-center gap-1.5 p-2 rounded-xl text-xs font-medium border transition-all ${
@@ -1489,7 +1490,7 @@ export default function App() {
                     <Check className="w-3.5 h-3.5" />
                     <span>Lição</span>
                   </button>
-
+ 
                   <button
                     onClick={() => updateActiveChild('screenTimeDone', !activeChild.screenTimeDone)}
                     className={`flex items-center justify-center gap-1.5 p-2 rounded-xl text-xs font-medium border transition-all ${
@@ -1503,13 +1504,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <Clock className="w-4 h-4" />
                   <h2>Horários & Cronograma Livre</h2>
                 </div>
-
+ 
                 <div>
                   <textarea
                     rows={4}
@@ -1520,13 +1521,13 @@ export default function App() {
                   />
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-sky-600 font-semibold text-sm">
                   <Utensils className="w-4 h-4" />
                   <h2>Alimentação do Dia</h2>
                 </div>
-
+ 
                 <div>
                   <textarea
                     rows={2}
@@ -1539,7 +1540,7 @@ export default function App() {
               </div>
             </div>
           )}
-
+ 
           {/* ABA 3: SEGURANÇA & EMERGÊNCIA */}
           {activeTab === 'safety' && (
             <div className="space-y-4 animate-fade-in">
@@ -1550,7 +1551,7 @@ export default function App() {
                     <h2>Discagem Rápida / Emergência</h2>
                   </div>
                 </div>
-
+ 
                 <div className="grid grid-cols-1 gap-2">
                   {contacts.length === 0 ? (
                     <p className="text-xs text-slate-400 py-1">Nenhum contato de emergência cadastrado.</p>
@@ -1582,7 +1583,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="pt-2 border-t border-amber-100 space-y-2">
                   <p className="text-xs font-medium text-slate-600">Adicionar Novo Número:</p>
                   <div className="grid grid-cols-2 gap-2">
@@ -1610,13 +1611,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
                   <AlertTriangle className="w-4 h-4" />
                   <h2>Alergias & Restrições Graves</h2>
                 </div>
-
+ 
                 <div className="flex flex-wrap gap-2">
                   {allergiesList.length === 0 ? (
                     <p className="text-xs text-slate-400 py-1">Nenhuma alergia cadastrada.</p>
@@ -1634,7 +1635,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="flex gap-2 pt-1">
                   <input
                     type="text"
@@ -1651,13 +1652,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-amber-700 font-bold text-sm">
                   <HeartPulse className="w-4 h-4" />
                   <h2>Ficha Médica & Plano de Saúde</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
@@ -1681,7 +1682,7 @@ export default function App() {
                       />
                     </div>
                   </div>
-
+ 
                   <div>
                     <label className="text-[11px] font-medium text-slate-600 block mb-0.5">Hospital de Preferência</label>
                     <input
@@ -1692,7 +1693,7 @@ export default function App() {
                       className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-amber-200 bg-amber-50/10"
                     />
                   </div>
-
+ 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="text-[11px] font-medium text-slate-600 block mb-0.5">Nome do Pediatra</label>
@@ -1717,13 +1718,13 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-amber-700 font-bold text-sm">
                   <Pill className="w-4 h-4" />
                   <h2>Horários de Medicações & Alarmes</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {medicationsList.length === 0 ? (
                     <p className="text-xs text-slate-400 py-1">Nenhum medicamento cadastrado.</p>
@@ -1734,7 +1735,7 @@ export default function App() {
                           <p className="text-xs font-bold text-slate-800">{med.name} ({med.dose})</p>
                           <p className="text-[10px] text-amber-800 font-semibold">🕒 Horário: {med.time}</p>
                         </div>
-
+ 
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => toggleAlarm(med.id)}
@@ -1747,7 +1748,7 @@ export default function App() {
                             {med.alarmActive ? <BellRing className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5" />}
                             <span>{med.alarmActive ? 'Alarme ON' : 'Lembrete'}</span>
                           </button>
-
+ 
                           <button onClick={() => handleRemoveMedication(med.id)} className="text-slate-300 hover:text-red-400 p-1">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1756,7 +1757,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="p-3 bg-amber-50/50 border border-amber-200 rounded-xl space-y-2">
                   <p className="text-xs font-medium text-slate-700">Adicionar Remédio:</p>
                   <input
@@ -1790,13 +1791,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
                   <Home className="w-4 h-4 text-amber-600" />
                   <h2>Localização de Itens na Casa</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {houseLocations.length === 0 ? (
                     <p className="text-xs text-slate-400 py-1">Nenhum item cadastrado.</p>
@@ -1814,7 +1815,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="p-3 bg-amber-50/40 border border-amber-200 rounded-xl space-y-2 pt-2">
                   <p className="text-xs font-medium text-slate-700">Cadastrar Item/Equipamento:</p>
                   <input
@@ -1839,13 +1840,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
                   <UserCheck className="w-4 h-4 text-amber-600" />
                   <h2>Visitas, Estranhos & Encomendas</h2>
                 </div>
-
+ 
                 <textarea
                   rows={3}
                   value={visitorRules}
@@ -1856,7 +1857,7 @@ export default function App() {
               </div>
             </div>
           )}
-
+ 
           {/* ABA 4: CENTRAL DOS PAIS */}
           {activeTab === 'parents' && (
             <div className="space-y-4 animate-fade-in">
@@ -1865,11 +1866,11 @@ export default function App() {
                   <Printer className="w-4 h-4" />
                   <h2>Exportar Folha do Dia (PDF / Geladeira)</h2>
                 </div>
-
+ 
                 <p className="text-xs text-slate-500 leading-relaxed">
                   Gere um documento PDF limpo com os horários e rotina da criança.
                 </p>
-
+ 
                 <button
                   onClick={handlePrintPDF}
                   className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-medium text-sm transition-colors shadow-sm"
@@ -1878,7 +1879,7 @@ export default function App() {
                   <span>Gerar PDF / Imprimir Planner A4</span>
                 </button>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-emerald-600 font-semibold text-sm">
@@ -1889,7 +1890,7 @@ export default function App() {
                     {photoUrls.length} fotos
                   </span>
                 </div>
-
+ 
                 {photoUrls.length > 0 && (
                   <div className="grid grid-cols-3 gap-2 pt-1">
                     {photoUrls.map((url, idx) => (
@@ -1905,7 +1906,7 @@ export default function App() {
                     ))}
                   </div>
                 )}
-
+ 
                 <div className="flex gap-2 pt-1">
                   <input
                     type="text"
@@ -1922,13 +1923,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-emerald-600 font-semibold text-sm">
                   <ListPlus className="w-4 h-4" />
                   <h2>Lista de Reposição Categorizada</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">🍎 Alimentação & Snacks</label>
@@ -1940,7 +1941,7 @@ export default function App() {
                       className="w-full px-3 py-1.5 text-xs rounded-xl border border-emerald-200 bg-emerald-50/20 resize-none"
                     />
                   </div>
-
+ 
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">🧼 Higiene & Fraldas</label>
                     <textarea
@@ -1951,7 +1952,7 @@ export default function App() {
                       className="w-full px-3 py-1.5 text-xs rounded-xl border border-emerald-200 bg-emerald-50/20 resize-none"
                     />
                   </div>
-
+ 
                   <div>
                     <label className="text-xs font-medium text-slate-600 block mb-1">✏️ Escola & Atividades</label>
                     <textarea
@@ -1964,13 +1965,13 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-emerald-600 font-semibold text-sm">
                   <FileCheck className="w-4 h-4" />
                   <h2>Autorizações & Saídas Especiais</h2>
                 </div>
-
+ 
                 <div className="space-y-2">
                   {permissions.length === 0 ? (
                     <p className="text-xs text-slate-400 py-1">Nenhuma autorização pendente.</p>
@@ -1998,7 +1999,7 @@ export default function App() {
                     ))
                   )}
                 </div>
-
+ 
                 <div className="p-3 bg-emerald-50/40 border border-emerald-200 rounded-xl space-y-2 pt-2">
                   <p className="text-xs font-semibold text-slate-700">Solicitar Nova Autorização:</p>
                   <input
@@ -2023,13 +2024,13 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-emerald-600 font-semibold text-sm">
                   <MessageSquare className="w-4 h-4" />
                   <h2>Central de Recados para os Pais</h2>
                 </div>
-
+ 
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => setMsgType('daily')}
@@ -2042,7 +2043,7 @@ export default function App() {
                     <FileText className="w-4 h-4" />
                     <span>Relatório</span>
                   </button>
-
+ 
                   <button
                     onClick={() => setMsgType('arrival')}
                     className={`p-2 rounded-xl text-xs font-medium border transition-all flex flex-col items-center gap-1 ${
@@ -2054,7 +2055,7 @@ export default function App() {
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Chegada</span>
                   </button>
-
+ 
                   <button
                     onClick={() => setMsgType('shopping')}
                     className={`p-2 rounded-xl text-xs font-medium border transition-all flex flex-col items-center gap-1 ${
@@ -2068,17 +2069,17 @@ export default function App() {
                   </button>
                 </div>
               </div>
-
+ 
               <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-emerald-600 font-semibold text-sm">
                   <Eye className="w-4 h-4" />
                   <h2>Pré-visualização do Texto</h2>
                 </div>
-
+ 
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 whitespace-pre-line leading-relaxed font-mono">
                   {buildWhatsAppText()}
                 </div>
-
+ 
                 <a
                   href={`https://wa.me/?text=${encodeURIComponent(buildWhatsAppText())}`}
                   target="_blank"
@@ -2089,12 +2090,12 @@ export default function App() {
                   <span>Enviar no WhatsApp</span>
                 </a>
               </div>
-
+ 
             </div>
           )}
-
+ 
         </main>
-
+ 
         {/* Navegação Inferior Fixa */}
         <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-4 py-2 z-20">
           <div className="max-w-md mx-auto flex items-center justify-around">
@@ -2107,7 +2108,7 @@ export default function App() {
               <User className="w-5 h-5" />
               <span>Meu Espaço</span>
             </button>
-
+ 
             <button
               onClick={() => setActiveTab('schedule')}
               className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs font-medium transition-colors ${
@@ -2117,7 +2118,7 @@ export default function App() {
               <Calendar className="w-5 h-5" />
               <span>Cronograma</span>
             </button>
-
+ 
             <button
               onClick={() => setActiveTab('safety')}
               className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs font-medium transition-colors ${
@@ -2127,7 +2128,7 @@ export default function App() {
               <ShieldAlert className="w-5 h-5" />
               <span>Segurança</span>
             </button>
-
+ 
             <button
               onClick={() => setActiveTab('parents')}
               className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs font-medium transition-colors ${
@@ -2137,10 +2138,21 @@ export default function App() {
               <MessageSquare className="w-5 h-5" />
               <span>Para os Pais</span>
             </button>
+ 
+            <a
+              href="https://tally.so/r/kblvBZ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-1 p-2 rounded-xl text-xs font-medium transition-colors text-slate-400 hover:text-violet-600"
+            >
+              <Search className="w-5 h-5" />
+              <span>Encontrar Au Pairs</span>
+            </a>
           </div>
         </nav>
       </div>
-
+ 
     </div>
   );
 }
+ 
