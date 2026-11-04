@@ -44,7 +44,8 @@ import {
   Download,
   Briefcase,
   HeartHandshake,
-  FolderDown
+  FolderDown,
+  Users
 } from 'lucide-react';
 
 interface Course {
@@ -2156,9 +2157,30 @@ export default function App() {
             </div>
           )}
 
-          {/* ABA 5: BIBLIOTECA VIP DE MATERIAIS */}
+          {/* ABA 5: BIBLIOTECA VIP DE MATERIAIS + COMUNIDADE */}
           {activeTab === 'materials' && (
             <div className="space-y-4 animate-fade-in">
+              
+              {/* CARD DE DESTAQUE: ENCONTRAR AU PAIRS (RECURSO COMUNIDADE) */}
+              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-5 rounded-2xl text-white shadow-md space-y-3">
+                <div className="flex items-center gap-2 font-bold text-sm text-purple-100">
+                  <Users className="w-5 h-5 text-purple-200" />
+                  <h2>Rede Au Pair & Comunidade</h2>
+                </div>
+                <p className="text-xs text-purple-100 leading-relaxed">
+                  Conecte-se com outras Au Pairs no seu estado, cidade ou país de destino para trocar experiências e fazer amizades.
+                </p>
+                <a
+                  href="https://tally.so/r/3y91ee"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-white text-purple-700 hover:bg-purple-50 font-bold py-2.5 px-4 rounded-xl transition-all text-xs shadow-sm"
+                >
+                  <Users className="w-4 h-4" />
+                  <span>Encontrar Au Pairs Perto de Mim</span>
+                </a>
+              </div>
+
               <div className="bg-white p-5 rounded-2xl border border-purple-100 shadow-sm space-y-3 text-center">
                 <div className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -2220,7 +2242,7 @@ export default function App() {
 
         </main>
 
-        {/* Navegação Inferior Fixa */}
+        {/* Navegação Inferior Fixa (Mantendo 5 Abas) */}
         <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-2 py-2 z-20">
           <div className="max-w-md mx-auto flex items-center justify-around">
             <button
