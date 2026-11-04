@@ -2171,7 +2171,7 @@ export default function App() {
                   Conecte-se com outras Au Pairs no seu estado, cidade ou país de destino para trocar experiências e fazer amizades.
                 </p>
                 <a
-                  href="https://tally.so/r/3y91ee"
+                  href="https://tally.so/r/kblvBZ"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 bg-white text-purple-700 hover:bg-purple-50 font-bold py-2.5 px-4 rounded-xl transition-all text-xs shadow-sm"
